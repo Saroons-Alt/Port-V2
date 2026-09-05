@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Saroon · developer portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+
+  <!-- NAVIGATION -->
+  <nav>
+    <div class="nav-brand">
+      <span class="brand-logo">◆</span> ~/saroon <span># portfolio</span>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="menu">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="#home" class="nav-link active" data-section="home">Home</a>
+      <a href="#about" class="nav-link" data-section="about">About</a>
+      <a href="#projects" class="nav-link" data-section="projects">Projects</a>
+      <a href="#skills" class="nav-link" data-section="skills">Skills</a>
+      <a href="#experience" class="nav-link" data-section="experience">Experience</a>
+      <a href="#stats" class="nav-link" data-section="stats">Stats</a>
+      <a href="#education" class="nav-link" data-section="education">Education</a>
+      <a href="#contact" class="nav-link" data-section="contact">Contact</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+    </div>
+  </nav>
+
+  <!-- HOME / HERO -->
+  <section id="home" class="fade-up" style="animation-delay:0.1s;">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="hero-prompt">$ whoami</div>
+        <h1 class="hero-name">Saroon</h1>
+        <div class="hero-title">Web Developer &amp; Student</div>
+        <p class="hero-desc">Class 12 · building things with HTML, CSS, JavaScript, and Node.js. Curious about APIs, databases, and authentication.</p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-primary">View Projects</a>
+          <a href="#contact" class="btn">Contact Me</a>
+        </div>
+      </div>
+
+      <!-- TERMINAL -->
+      <div class="terminal" id="terminalWidget">
+        <div class="terminal-header">
+          <span class="terminal-dots"><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span></span>
+          <span>terminal — saroon.dev</span>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-output" id="terminalOutput">$ help<br>about · projects · skills · experience · education · contact · clear</div>
+          <div class="terminal-input-line">
+            <span class="terminal-prompt">$</span>
+            <input type="text" class="terminal-input" id="terminalInput" placeholder="type a command…" autofocus>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="fade-up" style="animation-delay:0.2s;">
+    <h2><span>About</span> <span class="label-mono">$ whoami</span></h2>
+    <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius);padding:1.8rem;">
+      <p style="color:var(--text-secondary);line-height:1.8;font-size:1rem;">
+        As a full-stack Software Engineer, I specialize in building scalable web applications using modern technologies such as Next.js, React, and Tailwind CSS. I'm also expanding my expertise into DevOps and cloud practices to create efficient, maintainable, robust web solutions.
+      </p>
+      <p style="color:var(--text-secondary);line-height:1.8;font-size:1rem;margin-top:1rem;">
+        When I'm not coding, I enjoy learning new technologies and working on personal projects.
+      </p>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="fade-up" style="animation-delay:0.25s;">
+    <h2><span>Projects</span> <span class="label-mono">$ ls /projects</span></h2>
+    <div class="projects-grid">
+      <a href="project1.html" class="project-card-link">
+        <div class="project-card">
+          <div class="project-meta"><span>$ project</span> <span>#01</span></div>
+          <div class="project-name">Portfolio Website</div>
+          <div class="project-desc">Terminal-inspired developer portfolio with interactive command line.</div>
+          <div class="project-tech"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Node.js</span></div>
+          <div class="project-links">
+            <span class="project-click-hint">Click to learn more →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="project2.html" class="project-card-link">
+        <div class="project-card">
+          <div class="project-meta"><span>$ project</span> <span>#02</span></div>
+          <div class="project-name">Task Manager App</div>
+          <div class="project-desc">Simple task management with local storage and clean UI.</div>
+          <div class="project-tech"><span>JavaScript</span><span>CSS</span><span>HTML</span></div>
+          <div class="project-links">
+            <span class="project-click-hint">Click to learn more →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="project3.html" class="project-card-link">
+        <div class="project-card">
+          <div class="project-meta"><span>$ project</span> <span>#03</span></div>
+          <div class="project-name">API Explorer</div>
+          <div class="project-desc">Exploring REST APIs and practicing authentication flows.</div>
+          <div class="project-tech"><span>Node.js</span><span>Express</span><span>APIs</span></div>
+          <div class="project-links">
+            <span class="project-click-hint">Click to learn more →</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" class="fade-up" style="animation-delay:0.3s;">
+    <h2><span>Skills</span> <span class="label-mono">$ which</span></h2>
+    <div class="skills-grid-full">
+      <div class="skill-category">
+        <h3>🌐 Languages</h3>
+        <div class="skill-tags">
+          <span>HTML</span><span>CSS</span><span>JavaScript</span><span>TypeScript</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h3>⚛️ Frameworks & Libraries</h3>
+        <div class="skill-tags">
+          <span>ReactJS</span><span>NextJS</span><span>Redux</span><span>NodeJS</span>
+          <span>ExpressJS</span><span>Tailwind CSS</span><span>shadcn/ui</span>
+          <span>Material UI</span><span>Framer Motion</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h3>🗄️ Databases & Cloud</h3>
+        <div class="skill-tags">
+          <span>MongoDB</span><span>Supabase</span><span>Docker</span><span>Vercel</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h3>🛠️ Tools & Others</h3>
+        <div class="skill-tags">
+          <span>Git</span><span>GitHub</span><span>Postman</span><span>npm</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" class="fade-up" style="animation-delay:0.35s;">
+    <h2><span>Experience</span> <span class="label-mono">$ history</span></h2>
+    <div class="experience-timeline">
+      <div class="experience-item">
+        <div class="experience-header">
+          <div>
+            <h3>Open Source Developer · Hacktoberfest</h3>
+            <span class="experience-company">Open Source Contributor</span>
+          </div>
+          <span class="experience-date">Oct 2025 - Present</span>
+        </div>
+        <p class="experience-desc">Currently contributing as an Open Source Developer at Hacktoberfest, working on various web development projects and community.</p>
+      </div>
+
+      <div class="experience-item">
+        <div class="experience-header">
+          <div>
+            <h3>Trainee · Sheriyans Coding School</h3>
+            <span class="experience-company">Full Stack Development</span>
+          </div>
+          <span class="experience-date">May 2025 - Oct 2025</span>
+        </div>
+        <p class="experience-desc">Trainee at Sheriyans Coding School, learned full-stack technologies and DevOps practices. Participated in hackathons as a developer community.</p>
+      </div>
+
+      <div class="experience-item">
+        <div class="experience-header">
+          <div>
+            <h3>Project Admin · GSSoC25</h3>
+            <span class="experience-company">GirlScript Summer of Code</span>
+          </div>
+          <span class="experience-date">Aug 2025 - Sept 2025</span>
+        </div>
+        <p class="experience-desc">As a Project Admin, I reviewed code, merged pull requests, and communicated with developers, ensuring smooth project progress.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section id="stats" class="fade-up" style="animation-delay:0.37s;">
+    <h2><span>Stats</span> <span class="label-mono">$ metrics</span></h2>
+    <div class="stats-grid">
+      <!-- Portfolio Stats -->
+      <div class="stats-card">
+        <h3>📊 Portfolio Insights</h3>
+        <div class="stats-item">
+          <span class="stats-label">Total Views</span>
+          <span class="stats-value" id="viewCount">0</span>
+          <span class="stats-sub">Unique page visits</span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Appreciation Count</span>
+          <span class="stats-value" id="likeCount">0</span>
+          <span class="stats-sub">Thank you, much appreciated!</span>
+        </div>
+        <button class="like-btn" id="likeBtn">
+          <span class="like-icon">♡</span> I like this website
+        </button>
+      </div>
+
+      <!-- GitHub Stats -->
+      <div class="stats-card">
+        <h3>🐙 GitHub Insights</h3>
+        <div class="stats-item">
+          <span class="stats-label">Hireable</span>
+          <span class="stats-value" id="hireable">Loading...</span>
+          <span class="stats-sub">Available for opportunities</span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Total Repositories</span>
+          <span class="stats-value" id="repoCount">0</span>
+          <span class="stats-sub">Public repositories</span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Followers</span>
+          <span class="stats-value" id="followerCount">0</span>
+          <span class="stats-sub">People following</span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Following</span>
+          <span class="stats-value" id="followingCount">0</span>
+          <span class="stats-sub">People followed</span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Current Company</span>
+          <span class="stats-value" id="userCompany">Loading...</span>
+          <span class="stats-sub">Currently working at</span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Location</span>
+          <span class="stats-value" id="userLocation">Loading...</span>
+          <span class="stats-sub">Based in</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education" class="fade-up" style="animation-delay:0.4s;">
+    <h2><span>Education</span> <span class="label-mono">$ school</span></h2>
+    <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius);padding:1.8rem;">
+      <div style="font-size:1.1rem;font-weight:500;">Class 12 Student</div>
+      <div class="text-secondary" style="margin-top:0.2rem;">currently pursuing higher secondary education</div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="fade-up" style="animation-delay:0.45s;">
+    <h2><span>Contact</span> <span class="label-mono">$ mail</span></h2>
+    <div class="contact-grid">
+      <div class="contact-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" placeholder="your name">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" placeholder="say hello…"></textarea>
+        </div>
+        <button class="btn btn-primary" style="align-self:flex-start;" id="sendBtn">Send</button>
+        <div class="form-status" id="formStatus">(mock submission — no real backend)</div>
+      </div>
+      <div class="social-links">
+        <a href="https://github.com/yourusername" class="social-item"><span>GitHub</span> <span class="mono">/yourusername</span></a>
+        <a href="https://linkedin.com/in/yourusername" class="social-item"><span>LinkedIn</span> <span class="mono">/in/yourusername</span></a>
+        <a href="mailto:your-email@gmail.com" class="social-item"><span>Email</span> <span class="mono">your-email@gmail.com</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2026 Saroon — Built with <span style="color:#ff6b6b;">❤</span> and JavaScript</span>
+    <span class="mono">$ exit · connection closed.</span>
+  </footer>
+</div>
+
+<script src="script.js"></script>
+
+<!-- Connection Status -->
+<div id="connection-status" style="position:fixed;bottom:10px;right:10px;font-size:0.7rem;font-family:monospace;color:var(--text-muted);background:var(--bg-card);padding:0.3rem 0.8rem;border-radius:4px;border:1px solid var(--border-subtle);z-index:999;opacity:0.7;">
+  ● <span id="ws-status">connecting...</span>
+</div>
+
+<script>
+  (function() {
+    const wsStatus = document.getElementById('ws-status');
+    if (wsStatus) {
+      const checkConnection = setInterval(() => {
+        if (typeof ws !== 'undefined' && ws && ws.readyState === WebSocket.OPEN) {
+          wsStatus.textContent = '● connected';
+          wsStatus.style.color = '#6bff6b';
+          document.getElementById('connection-status').style.opacity = '1';
+          clearInterval(checkConnection);
+        } else if (typeof ws !== 'undefined' && ws && ws.readyState === WebSocket.CLOSED) {
+          wsStatus.textContent = '● offline (local mode)';
+          wsStatus.style.color = '#ff6b6b';
+          document.getElementById('connection-status').style.opacity = '1';
+          clearInterval(checkConnection);
+        } else if (typeof ws !== 'undefined' && ws && ws.readyState === WebSocket.CONNECTING) {
+          wsStatus.textContent = '● connecting...';
+          wsStatus.style.color = '#ffd93d';
+        }
+      }, 1000);
+    }
+  })();
+</script>
+
+</body>
+</html>

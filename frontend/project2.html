@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Manager · Saroon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .project-detail-page {
+      max-width: 800px;
+      margin: 4rem auto;
+      padding: 0 1.5rem;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      transition: var(--transition);
+    }
+    .back-link:hover { color: var(--text-primary); }
+    .detail-header h1 {
+      font-size: 2.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .detail-meta {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+    .detail-meta span {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--bg);
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      border: 1px solid var(--border-subtle);
+    }
+    .detail-body {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      font-size: 1.05rem;
+    }
+    .detail-body h2 {
+      font-size: 1.4rem;
+      color: var(--text-primary);
+      margin: 2.5rem 0 1rem;
+      font-weight: 600;
+    }
+    .detail-body ul {
+      padding-left: 1.5rem;
+      list-style-type: '▸ ';
+      margin-bottom: 1rem;
+    }
+    .detail-body ul li { margin-bottom: 0.5rem; }
+    .detail-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0.5rem 0 1rem;
+    }
+    .detail-tech span {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-subtle);
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      color: var(--text-secondary);
+    }
+    .detail-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .detail-image {
+      width: 100%;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-subtle);
+      margin: 1.5rem 0;
+      background: var(--bg-card);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+    }
+    [data-theme="light"] .detail-tech span { background: rgba(0,0,0,0.04); }
+    @media (max-width: 600px) { .detail-header h1 { font-size: 2rem; } }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="project-detail-page">
+    <a href="index.html#projects" class="back-link">← Back to projects</a>
+    <div class="detail-header">
+      <h1>Task Manager App</h1>
+      <div class="detail-meta">
+        <span>$ project #02</span>
+        <span>2024</span>
+        <span>Frontend</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <p>A simple yet powerful task management application with local storage persistence and a clean, intuitive interface.</p>
+      <div class="detail-image">🖥️ Project Screenshot Placeholder<br><span style="font-size:0.7rem;">(Add your screenshot here)</span></div>
+      <h2>✨ Features</h2>
+      <ul>
+        <li>Create, edit, and delete tasks</li>
+        <li>Mark tasks as complete/incomplete</li>
+        <li>Local storage for data persistence</li>
+        <li>Clean and minimal UI with terminal aesthetic</li>
+      </ul>
+      <h2>🛠️ Tech Stack</h2>
+      <div class="detail-tech">
+        <span>JavaScript</span><span>CSS3</span><span>HTML5</span><span>Local Storage</span>
+      </div>
+      <h2>📚 What I Learned</h2>
+      <ul>
+        <li>DOM manipulation and event handling</li>
+        <li>Working with browser storage APIs</li>
+        <li>Building a complete CRUD application</li>
+      </ul>
+      <div class="detail-links">
+        <a href="#" class="btn btn-primary">🔗 Live Demo</a>
+        <a href="#" class="btn">📂 View on GitHub</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
