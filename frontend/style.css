@@ -337,6 +337,7 @@ nav {
   word-break: break-word;
   margin-bottom: 0.6rem;
   flex: 1;
+  min-height: 60px;
 }
 .terminal-input-line {
   display: flex;
@@ -359,6 +360,7 @@ nav {
   font-size: 0.85rem;
   width: 100%;
   caret-color: var(--text-primary);
+  padding: 0;
 }
 .terminal-input::placeholder {
   color: var(--text-muted);
@@ -696,7 +698,7 @@ section {
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--text-secondary);
-  letter-spacing: 0.01em;
+  font-family: var(--font-mono);
 }
 .form-group input,
 .form-group textarea {
@@ -722,8 +724,11 @@ section {
 }
 .form-status {
   font-size: 0.85rem;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   padding: 0.2rem 0;
+  font-family: var(--font-mono);
+  min-height: 1.8rem;
+  transition: color 0.3s ease;
 }
 
 .social-links {

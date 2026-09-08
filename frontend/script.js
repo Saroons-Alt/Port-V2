@@ -4,7 +4,7 @@
   const CONFIG = {
     API_URL: '/api',
     WS_URL: `ws://${window.location.host}`,
-    GITHUB_USERNAME: 'Saroons-Alt'
+    GITHUB_USERNAME: 'Saroons-Alt'  // ✅ Fixed to your GitHub
   };
 
   const RIG = {
@@ -56,7 +56,9 @@
     }, 60);
   });
 
-  // TERMINAL - FIXED (NO DOUBLE MESSAGES)
+  // ============================================
+  // TERMINAL
+  // ============================================
   const termInput = document.getElementById('terminalInput');
   const termOutput = document.getElementById('terminalOutput');
   const terminalWidget = document.getElementById('terminalWidget');
@@ -71,7 +73,11 @@
       ws.onopen = () => {
         console.log('WebSocket connected');
         wsConnected = true;
-        // NO message sent here - prevents duplicates
+        
+        // Show help message ONCE when terminal connects
+        if (termOutput) {
+          termOutput.innerText = 'Type "help" for commands';
+        }
       };
       
       ws.onmessage = (event) => {
@@ -101,6 +107,9 @@
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
         wsConnected = false;
+        if (termOutput) {
+          termOutput.innerText = '⚠️ Connection error - check if server is running';
+        }
       };
       
       ws.onclose = () => {
@@ -111,12 +120,14 @@
       
     } catch (error) {
       console.error('Failed to connect WebSocket:', error);
+      if (termOutput) {
+        termOutput.innerText = '⚠️ WebSocket connection failed - using fallback mode';
+      }
     }
   }
 
   connectWebSocket();
 
-  // Handle terminal input
   if (termInput) {
     termInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
@@ -128,7 +139,7 @@
         if (wsConnected && ws && ws.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify({ command: cmd }));
         } else {
-          // Local fallback commands
+          // Fallback commands
           const commandMap = {
             help: 'about · projects · skills · experience · education · contact · clear',
             about: '17-year-old making things on the internet.',
@@ -301,7 +312,7 @@
   }
 
   // ============================================
-  // STATS - GitHub Data
+  // STATS - GitHub Data (FIXED)
   // ============================================
   async function fetchGitHubStats() {
     const username = CONFIG.GITHUB_USERNAME;
@@ -321,6 +332,12 @@
       
     } catch (error) {
       console.error('Error fetching GitHub data:', error);
+      document.getElementById('repoCount').textContent = 'Error';
+      document.getElementById('followerCount').textContent = 'Error';
+      document.getElementById('followingCount').textContent = 'Error';
+      document.getElementById('userLocation').textContent = 'Error';
+      document.getElementById('hireable').textContent = 'Error';
+      document.getElementById('userCompany').textContent = 'Error';
     }
   }
 
