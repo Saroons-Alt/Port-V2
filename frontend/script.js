@@ -1,13 +1,11 @@
 (function() {
   console.log('🚀 Script loaded');
 
-  const CONFIG = {
-    API_URL: '/api',
-    WS_URL: window.location.protocol === 'https:' 
-      ? `wss://${window.location.host}` 
-      : `ws://${window.location.host}`,
-    GITHUB_USERNAME: 'Saroons-Alt'
-  };
+const CONFIG = {
+  API_URL: '/api',
+  WS_URL: `wss://${window.location.host}`,
+  GITHUB_USERNAME: 'Saroons-Alt'
+};
 
   const RIG = {
     STARTING_LIKES: 50
