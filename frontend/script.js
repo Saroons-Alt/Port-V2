@@ -3,8 +3,10 @@
 
   const CONFIG = {
     API_URL: '/api',
-    WS_URL: `ws://${window.location.host}`,
-    GITHUB_USERNAME: 'Saroons-Alt'  // ✅ Fixed to your GitHub
+    WS_URL: window.location.protocol === 'https:' 
+      ? `wss://${window.location.host}` 
+      : `ws://${window.location.host}`,
+    GITHUB_USERNAME: 'Saroons-Alt'
   };
 
   const RIG = {
@@ -74,7 +76,6 @@
         console.log('WebSocket connected');
         wsConnected = true;
         
-        // Show help message ONCE when terminal connects
         if (termOutput) {
           termOutput.innerText = 'Type "help" for commands';
         }
@@ -139,7 +140,6 @@
         if (wsConnected && ws && ws.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify({ command: cmd }));
         } else {
-          // Fallback commands
           const commandMap = {
             help: 'about · projects · skills · experience · education · contact · clear',
             about: '17-year-old making things on the internet.',
@@ -312,7 +312,7 @@
   }
 
   // ============================================
-  // STATS - GitHub Data (FIXED)
+  // STATS - GitHub Data
   // ============================================
   async function fetchGitHubStats() {
     const username = CONFIG.GITHUB_USERNAME;
