@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
@@ -6,6 +5,7 @@ const dotenv = require('dotenv');
 const { WebSocketServer } = require('ws');
 const http = require('http');
 const path = require('path');
+const fs = require('fs');
 
 dotenv.config();
 
@@ -13,21 +13,46 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-// Middleware
 app.use(cors());
 app.use(express.json());
-
-// ===== SERVE FRONTEND FILES =====
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // ============================================
-// CONTACT FORM - Email Sending (FIXED)
+// VIEWS COUNTER
 // ============================================
 
-// Check if email credentials exist
+const viewsFile = path.join(__dirname, 'views.json');
+
+if (!fs.existsSync(viewsFile)) {
+  fs.writeFileSync(viewsFile, JSON.stringify({ views: 0 }));
+}
+
+app.get('/api/views', (req, res) => {
+  try {
+    const data = JSON.parse(fs.readFileSync(viewsFile, 'utf8'));
+    res.json({ views: data.views });
+  } catch (error) {
+    res.json({ views: 0 });
+  }
+});
+
+app.post('/api/views/increment', (req, res) => {
+  try {
+    const data = JSON.parse(fs.readFileSync(viewsFile, 'utf8'));
+    data.views += 1;
+    fs.writeFileSync(viewsFile, JSON.stringify(data, null, 2));
+    res.json({ views: data.views });
+  } catch (error) {
+    res.json({ views: 0 });
+  }
+});
+
+// ============================================
+// CONTACT FORM
+// ============================================
+
 const hasEmailConfig = process.env.EMAIL_USER && process.env.EMAIL_PASS;
 
-// Create transporter only if email is configured
 let transporter = null;
 if (hasEmailConfig) {
   transporter = nodemailer.createTransport({
@@ -39,10 +64,9 @@ if (hasEmailConfig) {
   });
   console.log('✅ Email configured');
 } else {
-  console.log('⚠️ Email not configured - using file storage fallback');
+  console.log('⚠️ Email not configured - using file storage');
 }
 
-// Contact form endpoint
 app.post('/api/contact', async (req, res) => {
   const { name, email, message } = req.body;
 
@@ -62,7 +86,6 @@ app.post('/api/contact', async (req, res) => {
   }
 
   try {
-    // If email is configured, send real email
     if (transporter) {
       await transporter.sendMail({
         from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
@@ -83,8 +106,6 @@ app.post('/api/contact', async (req, res) => {
         message: 'Message sent successfully!' 
       });
     } else {
-      // Fallback: Save to file
-      const fs = require('fs');
       const messagesFile = path.join(__dirname, 'messages.json');
       let messages = [];
       
@@ -117,7 +138,7 @@ app.post('/api/contact', async (req, res) => {
 });
 
 // ============================================
-// TERMINAL - WebSocket
+// TERMINAL - WebSocket (FIXED - NO DOUBLE MESSAGES)
 // ============================================
 
 const clients = new Set();
@@ -135,34 +156,31 @@ const terminalResponses = {
         '  clear      - Clear terminal\n' +
         '  help       - Show this help',
 
-  about: 'About Saroon\n' +
-         'Class 12 student passionate about web development.\n' +
-         'Building things with HTML, CSS, JavaScript, and Node.js.\n' +
-         'Currently exploring APIs, databases, and authentication.',
+  about: '17-year-old making things on the internet.\n' +
+         'Class 12 student, learning web development.\n' +
+         'Into tech, games, football, and figuring things out.',
 
   projects: 'My Projects:\n' +
             '  📁 Portfolio v1    - Terminal-inspired portfolio\n' +
-            '  📁 Task Manager    - CLI-style task tracking\n' +
-            '  📁 API Playground  - REST API exploration',
+            '  📁 Task Manager    - Task tracking with local storage\n' +
+            '  📁 API Explorer    - REST API exploration',
 
   skills: 'Technical Skills:\n' +
-          '  ✅ HTML, CSS, JavaScript\n' +
-          '  ✅ Node.js, Express\n' +
+          '  ✅ HTML, CSS, JavaScript, TypeScript\n' +
+          '  ✅ React, Next.js, Node.js, Express\n' +
           '  🔄 Learning: APIs, Databases, Authentication',
 
-  experience: 'Experience:\n' +
-              '  [Coming soon] - Building my first projects\n' +
-              '  Learning through building and experimenting',
+  experience: 'Independent Web Developer (2026 - Present)\n' +
+              'Building websites and learning full-stack development.',
 
-  education: 'Education:\n' +
-             '  📚 Class 12 Student\n' +
-             '  💻 Self-taught web development\n' +
-             '  📖 Currently learning backend development',
+  education: 'Class 12 · NPW Science College · Lakhani\n' +
+             'Information Technology (70%, IT: 95%)\n' +
+             'Class 10 · Shivaji Vidyalaya (82%)',
 
   contact: 'Contact Me:\n' +
-           '  📧 Email: saroon@dev.placeholder\n' +
-           '  💻 GitHub: /saroon-dev\n' +
-           '  🔗 LinkedIn: /in/saroon',
+           '  📧 Email: naitiksarohaa@gmail.com\n' +
+           '  💻 GitHub: /naitiksarohaa\n' +
+           '  🔗 LinkedIn: /in/yourusername',
 
   date: () => {
     const now = new Date();
@@ -187,12 +205,7 @@ wss.on('connection', (ws) => {
   console.log('New terminal client connected');
   clients.add(ws);
 
-  ws.send(JSON.stringify({
-    type: 'output',
-    content: '🔌 Connected to server terminal\n' +
-             'Type "help" for available commands\n' +
-             '─────────────────────────────'
-  }));
+  // NO welcome message sent here - prevents duplicates
 
   ws.on('message', (message) => {
     try {
@@ -208,9 +221,7 @@ wss.on('connection', (ws) => {
       }
 
       if (command === 'clear') {
-        ws.send(JSON.stringify({
-          type: 'clear'
-        }));
+        ws.send(JSON.stringify({ type: 'clear' }));
         return;
       }
 
@@ -266,8 +277,7 @@ server.listen(PORT, () => {
   console.log(`📁 Serving frontend from: ${path.join(__dirname, '../frontend')}`);
   
   if (!hasEmailConfig) {
-    console.log(`⚠️  Email not configured - messages will be saved to messages.json`);
-    console.log(`📝 To enable email, add EMAIL_USER and EMAIL_PASS to .env file`);
+    console.log(`⚠️ Email not configured - messages will be saved to messages.json`);
   } else {
     console.log(`✅ Email configured - messages will be sent to ${process.env.EMAIL_USER}`);
   }

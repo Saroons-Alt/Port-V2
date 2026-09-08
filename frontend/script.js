@@ -1,26 +1,17 @@
 (function() {
   console.log('🚀 Script loaded');
 
-  // ============================================
-  // CONFIG
-  // ============================================
   const CONFIG = {
     API_URL: '/api',
     WS_URL: `ws://${window.location.host}`,
-    GITHUB_USERNAME: 'Saroons-Alt' // CHANGE THIS TO YOUR GITHUB USERNAME
+    GITHUB_USERNAME: 'Saroons-Alt'
   };
 
-  // ============================================
-  // 🎯 RIG SETTINGS - CHANGE THESE TO BUMP NUMBERS
-  // ============================================
   const RIG = {
-    EXTRA_VIEWS: 0,      // ← Change to 100, 500, 1000 to add extra views each visit
-    STARTING_LIKES: 50   // ← Change to 50, 100, 500 to set starting like count
+    STARTING_LIKES: 50
   };
 
-  // ============================================
-  // NAV TOGGLE
-  // ============================================
+  // NAV
   const toggle = document.getElementById('navToggle');
   const navLinks = document.getElementById('navLinks');
   if (toggle) {
@@ -29,9 +20,7 @@
     });
   }
 
-  // ============================================
-  // ACTIVE NAV LINK
-  // ============================================
+  // ACTIVE NAV
   const sections = document.querySelectorAll('section[id]');
   const navItems = document.querySelectorAll('.nav-link[data-section]');
 
@@ -67,9 +56,7 @@
     }, 60);
   });
 
-  // ============================================
-  // TERMINAL
-  // ============================================
+  // TERMINAL - FIXED (NO DOUBLE MESSAGES)
   const termInput = document.getElementById('terminalInput');
   const termOutput = document.getElementById('terminalOutput');
   const terminalWidget = document.getElementById('terminalWidget');
@@ -84,9 +71,7 @@
       ws.onopen = () => {
         console.log('WebSocket connected');
         wsConnected = true;
-        if (termOutput) {
-          termOutput.innerText = '🔌 Connected to server\nType "help" for commands\n─────────────────────────────';
-        }
+        // NO message sent here - prevents duplicates
       };
       
       ws.onmessage = (event) => {
@@ -116,9 +101,6 @@
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
         wsConnected = false;
-        if (termOutput) {
-          termOutput.innerText = '⚠️ Connection error\nFalling back to local mode\n─────────────────────────────\n$ help\nabout · projects · skills · experience · education · contact · clear';
-        }
       };
       
       ws.onclose = () => {
@@ -129,14 +111,12 @@
       
     } catch (error) {
       console.error('Failed to connect WebSocket:', error);
-      if (termOutput) {
-        termOutput.innerText = '⚠️ Running in local mode\n─────────────────────────────\n$ help\nabout · projects · skills · experience · education · contact · clear';
-      }
     }
   }
 
   connectWebSocket();
 
+  // Handle terminal input
   if (termInput) {
     termInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
@@ -148,14 +128,15 @@
         if (wsConnected && ws && ws.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify({ command: cmd }));
         } else {
+          // Local fallback commands
           const commandMap = {
             help: 'about · projects · skills · experience · education · contact · clear',
-            about: '[ About — coming soon ]',
-            projects: '📁 portfolio · task-manager · api-playground',
-            skills: 'HTML · CSS · JavaScript · Node.js · (learning: APIs, Databases, Auth)',
-            experience: '[ Experience — coming soon ]',
-            education: 'Class 12 Student',
-            contact: '📬 email / github / linkedin (see contact section)',
+            about: '17-year-old making things on the internet.',
+            projects: '📁 portfolio · task-manager · api-explorer',
+            skills: 'HTML, CSS, JavaScript, TypeScript, React, Next.js, Node.js',
+            experience: 'Independent Web Developer (2026 - Present)',
+            education: 'Class 12 · NPW Science College',
+            contact: '📧 naitiksarohaa@gmail.com',
             clear: 'CLEAR'
           };
           
@@ -209,7 +190,7 @@
   // ============================================
   const sendBtn = document.getElementById('sendBtn');
   const formStatus = document.getElementById('formStatus');
-  
+
   if (sendBtn) {
     sendBtn.addEventListener('click', async () => {
       const name = document.getElementById('name').value.trim();
@@ -217,25 +198,25 @@
       const message = document.getElementById('message').value.trim();
       
       if (!name || !email || !message) {
-        formStatus.innerText = '⚠️ Please fill in all fields.';
-        formStatus.style.color = '#ff6b6b';
+        formStatus.textContent = '⚠️ error: all fields required';
+        formStatus.style.color = '#7a5a5a';
         return;
       }
       
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        formStatus.innerText = '⚠️ Please enter a valid email address.';
-        formStatus.style.color = '#ff6b6b';
+        formStatus.textContent = '⚠️ error: invalid email';
+        formStatus.style.color = '#7a5a5a';
         return;
       }
       
       sendBtn.disabled = true;
-      sendBtn.textContent = 'Sending...';
-      formStatus.innerText = '⏳ Sending message...';
-      formStatus.style.color = '#b0b0b0';
+      sendBtn.textContent = '$ sending...';
+      formStatus.textContent = '⏳ transmitting...';
+      formStatus.style.color = '#8a7a5a';
       
       try {
-        const response = await fetch(`${CONFIG.API_URL}/contact`, {
+        const response = await fetch('/api/contact', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -246,34 +227,32 @@
         const data = await response.json();
         
         if (data.success) {
-          formStatus.innerText = '✅ ' + data.message;
-          formStatus.style.color = '#6bff6b';
+          formStatus.textContent = '✓ message sent';
+          formStatus.style.color = '#5a7a5a';
           document.getElementById('name').value = '';
           document.getElementById('email').value = '';
           document.getElementById('message').value = '';
         } else {
-          formStatus.innerText = '❌ ' + (data.error || 'Failed to send message');
-          formStatus.style.color = '#ff6b6b';
+          formStatus.textContent = '✗ error: ' + (data.error || 'transmission failed');
+          formStatus.style.color = '#7a5a5a';
         }
       } catch (error) {
         console.error('Contact form error:', error);
-        formStatus.innerText = '❌ Network error. Please try again.';
-        formStatus.style.color = '#ff6b6b';
+        formStatus.textContent = '✗ error: network issue';
+        formStatus.style.color = '#7a5a5a';
       } finally {
         sendBtn.disabled = false;
-        sendBtn.textContent = 'Send';
+        sendBtn.textContent = '$ send';
         
         setTimeout(() => {
-          formStatus.innerText = '(mock submission — no real backend)';
-          formStatus.style.color = 'var(--text-secondary)';
-        }, 5000);
+          formStatus.textContent = '⏳ waiting for input...';
+          formStatus.style.color = '#6a6a6a';
+        }, 3000);
       }
     });
   }
 
-  // ============================================
   // THEME TOGGLE
-  // ============================================
   const themeToggle = document.getElementById('themeToggle');
   
   if (themeToggle) {
@@ -299,7 +278,30 @@
   }
 
   // ============================================
-  // STATS - Fetch GitHub Data
+  // STATS - Views
+  // ============================================
+  async function updateViewCount() {
+    try {
+      const incRes = await fetch('/api/views/increment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const incData = await incRes.json();
+      
+      const viewCount = document.getElementById('viewCount');
+      if (viewCount) viewCount.textContent = incData.views || 0;
+    } catch (error) {
+      console.error('Error updating views:', error);
+      let views = parseInt(localStorage.getItem('portfolioViews')) || 0;
+      views += 1;
+      localStorage.setItem('portfolioViews', views);
+      const viewCount = document.getElementById('viewCount');
+      if (viewCount) viewCount.textContent = views;
+    }
+  }
+
+  // ============================================
+  // STATS - GitHub Data
   // ============================================
   async function fetchGitHubStats() {
     const username = CONFIG.GITHUB_USERNAME;
@@ -313,31 +315,13 @@
       document.getElementById('followingCount').textContent = userData.following || 0;
       document.getElementById('userLocation').textContent = userData.location || 'Not specified';
       
-      // Hireable status
       const hireable = userData.hireable === true ? '✅ Yes' : '❌ No';
       document.getElementById('hireable').textContent = hireable;
-      
-      // Company
       document.getElementById('userCompany').textContent = userData.company || 'Not specified';
       
     } catch (error) {
       console.error('Error fetching GitHub data:', error);
-      document.getElementById('repoCount').textContent = 'Error';
-      document.getElementById('userLocation').textContent = 'Could not fetch';
-      document.getElementById('hireable').textContent = 'Error';
-      document.getElementById('userCompany').textContent = 'Error';
     }
-  }
-
-  // ============================================
-  // STATS - Views
-  // ============================================
-  function updateViewCount() {
-    let views = parseInt(localStorage.getItem('portfolioViews')) || 0;
-    views += 1 + RIG.EXTRA_VIEWS;
-    localStorage.setItem('portfolioViews', views);
-    const viewCount = document.getElementById('viewCount');
-    if (viewCount) viewCount.textContent = views;
   }
 
   // ============================================
@@ -389,7 +373,6 @@
     });
     
     updateLikeDisplay();
-    console.log('❤️ Initial like count:', likeCount);
   }
 
   // ============================================
@@ -400,6 +383,5 @@
   fetchGitHubStats();
   
   console.log('🚀 Portfolio ready!');
-  console.log('🔧 RIG Settings:', RIG);
   
 })();
