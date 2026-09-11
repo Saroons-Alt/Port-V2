@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://saroon-dev.onrender.com/sitemap.xml
