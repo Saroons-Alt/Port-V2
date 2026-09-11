@@ -15,7 +15,34 @@ const wss = new WebSocketServer({ server });
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../frontend')));
+
+// ============================================
+// SERVE STATIC FILES (with proper MIME types)
+// ============================================
+app.use(express.static(path.join(__dirname, '../frontend'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.xml')) {
+      res.setHeader('Content-Type', 'application/xml');
+    }
+    if (filePath.endsWith('.txt')) {
+      res.setHeader('Content-Type', 'text/plain');
+    }
+    if (filePath.endsWith('.webmanifest')) {
+      res.setHeader('Content-Type', 'application/manifest+json');
+    }
+  }
+}));
+
+// Explicit routes for sitemap and robots
+app.get('/sitemap.xml', (req, res) => {
+  res.type('application/xml');
+  res.sendFile(path.join(__dirname, '../frontend/sitemap.xml'));
+});
+
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.sendFile(path.join(__dirname, '../frontend/robots.txt'));
+});
 
 // ============================================
 // VIEWS COUNTER
@@ -52,8 +79,8 @@ app.post('/api/views/increment', (req, res) => {
 // ============================================
 
 const hasEmailConfig = process.env.EMAIL_USER && process.env.EMAIL_PASS;
-
 let transporter = null;
+
 if (hasEmailConfig) {
   transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -71,18 +98,12 @@ app.post('/api/contact', async (req, res) => {
   const { name, email, message } = req.body;
 
   if (!name || !email || !message) {
-    return res.status(400).json({ 
-      success: false, 
-      error: 'All fields are required' 
-    });
+    return res.status(400).json({ success: false, error: 'All fields are required' });
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    return res.status(400).json({ 
-      success: false, 
-      error: 'Invalid email address' 
-    });
+    return res.status(400).json({ success: false, error: 'Invalid email address' });
   }
 
   try {
@@ -101,10 +122,7 @@ app.post('/api/contact', async (req, res) => {
         replyTo: email
       });
 
-      res.json({ 
-        success: true, 
-        message: 'Message sent successfully!' 
-      });
+      res.json({ success: true, message: 'Message sent successfully!' });
     } else {
       const messagesFile = path.join(__dirname, 'messages.json');
       let messages = [];
@@ -123,22 +141,16 @@ app.post('/api/contact', async (req, res) => {
       
       fs.writeFileSync(messagesFile, JSON.stringify(messages, null, 2));
       
-      res.json({ 
-        success: true, 
-        message: 'Message saved successfully!' 
-      });
+      res.json({ success: true, message: 'Message saved successfully!' });
     }
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Failed to send message. Please try again later.' 
-    });
+    res.status(500).json({ success: false, error: 'Failed to send message' });
   }
 });
 
 // ============================================
-// TERMINAL - WebSocket (FIXED - NO DOUBLE MESSAGES)
+// TERMINAL - WebSocket
 // ============================================
 
 const clients = new Set();
@@ -166,21 +178,20 @@ const terminalResponses = {
             '  📁 API Explorer    - REST API exploration',
 
   skills: 'Technical Skills:\n' +
-          '  ✅ HTML, CSS, JavaScript, TypeScript\n' +
-          '  ✅ React, Next.js, Node.js, Express\n' +
+          '  ✅ HTML, CSS, JavaScript, Python, Java\n' +
+          '  ✅ NodeJS, Framer Motion, Mongoose\n' +
           '  🔄 Learning: APIs, Databases, Authentication',
 
-  experience: 'Independent Web Developer (2026 - Present)\n' +
+  experience: 'Independent Web Developer (Jan 2026 - Present)\n' +
               'Building websites and learning full-stack development.',
 
-  education: 'Class 12 · NPW Science College · Lakhani\n' +
-             'Information Technology (70%, IT: 95%)\n' +
-             'Class 10 · Shivaji Vidyalaya (82%)',
+  education: 'Class 12 · Navyug School Mandir (Humanities)\n' +
+             'Class 10 · Navyug School, Mandir Marg (70%)',
 
   contact: 'Contact Me:\n' +
-           '  📧 Email: naitiksarohaa@gmail.com\n' +
-           '  💻 GitHub: /naitiksarohaa\n' +
-           '  🔗 LinkedIn: /in/yourusername',
+           '  📧 Email: naitiksarohaa9@gmail.com\n' +
+           '  💻 GitHub: /Saroons-Alt\n' +
+           '  🔗 LinkedIn: /in/saroonn',
 
   date: () => {
     const now = new Date();
@@ -198,14 +209,12 @@ const terminalResponses = {
 
   whoami: 'User: Saroon\n' +
           'Role: Web Developer & Student\n' +
-          'Location: Building cool things online'
+          'Location: India'
 };
 
 wss.on('connection', (ws) => {
   console.log('New terminal client connected');
   clients.add(ws);
-
-  // NO welcome message sent here - prevents duplicates
 
   ws.on('message', (message) => {
     try {
