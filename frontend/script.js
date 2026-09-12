@@ -1,17 +1,14 @@
 (function() {
   console.log('🚀 Script loaded');
 
-const CONFIG = {
-  API_URL: '/api',
-  WS_URL: `wss://${window.location.host}`,
-  GITHUB_USERNAME: 'Saroons-Alt'
-};
-
-  const RIG = {
-    STARTING_LIKES: 50
+  const CONFIG = {
+    API_URL: '/api',
+    GITHUB_USERNAME: 'Saroons-Alt'
   };
 
+  // ============================================
   // NAV
+  // ============================================
   const toggle = document.getElementById('navToggle');
   const navLinks = document.getElementById('navLinks');
   if (toggle) {
@@ -20,7 +17,6 @@ const CONFIG = {
     });
   }
 
-  // ACTIVE NAV
   const sections = document.querySelectorAll('section[id]');
   const navItems = document.querySelectorAll('.nav-link[data-section]');
 
@@ -62,18 +58,21 @@ const CONFIG = {
   const termInput = document.getElementById('terminalInput');
   const termOutput = document.getElementById('terminalOutput');
   const terminalWidget = document.getElementById('terminalWidget');
-  
+
   let ws = null;
   let wsConnected = false;
 
   function connectWebSocket() {
     try {
-      ws = new WebSocket(CONFIG.WS_URL);
+      const wsUrl = window.location.protocol === 'https:' 
+        ? `wss://${window.location.host}` 
+        : `ws://${window.location.host}`;
+      
+      ws = new WebSocket(wsUrl);
       
       ws.onopen = () => {
         console.log('WebSocket connected');
         wsConnected = true;
-        
         if (termOutput) {
           termOutput.innerText = 'Type "help" for commands';
         }
@@ -106,9 +105,6 @@ const CONFIG = {
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
         wsConnected = false;
-        if (termOutput) {
-          termOutput.innerText = '⚠️ Connection error - check if server is running';
-        }
       };
       
       ws.onclose = () => {
@@ -119,9 +115,6 @@ const CONFIG = {
       
     } catch (error) {
       console.error('Failed to connect WebSocket:', error);
-      if (termOutput) {
-        termOutput.innerText = '⚠️ WebSocket connection failed - using fallback mode';
-      }
     }
   }
 
@@ -141,11 +134,11 @@ const CONFIG = {
           const commandMap = {
             help: 'about · projects · skills · experience · education · contact · clear',
             about: '17-year-old making things on the internet.',
-            projects: '📁 portfolio · task-manager · api-explorer',
-            skills: 'HTML, CSS, JavaScript, TypeScript, React, Next.js, Node.js',
+            projects: '📁 StudyOS · Finance Tracker · Minecraft Showcase',
+            skills: 'HTML, CSS, JavaScript, Python, Java, NodeJS',
             experience: 'Independent Web Developer (2026 - Present)',
-            education: 'Class 12 · NPW Science College',
-            contact: '📧 naitiksarohaa@gmail.com',
+            education: 'Class 12 · Navyug School Mandir',
+            contact: '📧 naitiksarohaa9@gmail.com',
             clear: 'CLEAR'
           };
           
@@ -220,16 +213,14 @@ const CONFIG = {
       }
       
       sendBtn.disabled = true;
-      sendBtn.textContent = '$ sending...';
+      sendBtn.textContent = 'Sending...';
       formStatus.textContent = '⏳ transmitting...';
       formStatus.style.color = '#8a7a5a';
       
       try {
         const response = await fetch('/api/contact', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, message })
         });
         
@@ -251,7 +242,7 @@ const CONFIG = {
         formStatus.style.color = '#7a5a5a';
       } finally {
         sendBtn.disabled = false;
-        sendBtn.textContent = '$ send';
+        sendBtn.textContent = 'Send';
         
         setTimeout(() => {
           formStatus.textContent = '⏳ waiting for input...';
@@ -261,7 +252,9 @@ const CONFIG = {
     });
   }
 
+  // ============================================
   // THEME TOGGLE
+  // ============================================
   const themeToggle = document.getElementById('themeToggle');
   
   if (themeToggle) {
@@ -287,7 +280,7 @@ const CONFIG = {
   }
 
   // ============================================
-  // STATS - Views
+  // STATS - VIEWS (Global)
   // ============================================
   async function updateViewCount() {
     try {
@@ -301,16 +294,68 @@ const CONFIG = {
       if (viewCount) viewCount.textContent = incData.views || 0;
     } catch (error) {
       console.error('Error updating views:', error);
-      let views = parseInt(localStorage.getItem('portfolioViews')) || 0;
-      views += 1;
-      localStorage.setItem('portfolioViews', views);
-      const viewCount = document.getElementById('viewCount');
-      if (viewCount) viewCount.textContent = views;
     }
   }
 
   // ============================================
-  // STATS - GitHub Data
+  // STATS - LIKES (Global)
+  // ============================================
+  const likeBtn = document.getElementById('likeBtn');
+  const likeDisplay = document.getElementById('likeCount');
+
+  async function loadLikes() {
+    try {
+      const res = await fetch('/api/likes');
+      const data = await res.json();
+      if (likeDisplay) likeDisplay.textContent = data.likes;
+      
+      const userLiked = localStorage.getItem('portfolioUserLiked') === 'true';
+      if (userLiked && likeBtn) {
+        likeBtn.classList.add('liked');
+        likeBtn.querySelector('.like-icon').textContent = '❤';
+      }
+    } catch (error) {
+      console.error('Error loading likes:', error);
+    }
+  }
+
+  if (likeBtn && likeDisplay) {
+    likeBtn.addEventListener('click', async function() {
+      const userLiked = localStorage.getItem('portfolioUserLiked') === 'true';
+      
+      if (!userLiked) {
+        try {
+          const res = await fetch('/api/likes/increment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          const data = await res.json();
+          
+          likeDisplay.textContent = data.likes;
+          localStorage.setItem('portfolioUserLiked', 'true');
+          
+          likeBtn.classList.add('liked');
+          likeBtn.querySelector('.like-icon').textContent = '❤';
+          
+          const icon = this.querySelector('.like-icon');
+          icon.style.transform = 'scale(1.5)';
+          setTimeout(() => {
+            icon.style.transform = 'scale(1)';
+          }, 300);
+        } catch (error) {
+          console.error('Error liking:', error);
+        }
+      } else {
+        this.style.opacity = '0.6';
+        setTimeout(() => {
+          this.style.opacity = '1';
+        }, 500);
+      }
+    });
+  }
+
+  // ============================================
+  // STATS - GITHUB
   // ============================================
   async function fetchGitHubStats() {
     const username = CONFIG.GITHUB_USERNAME;
@@ -330,64 +375,7 @@ const CONFIG = {
       
     } catch (error) {
       console.error('Error fetching GitHub data:', error);
-      document.getElementById('repoCount').textContent = 'Error';
-      document.getElementById('followerCount').textContent = 'Error';
-      document.getElementById('followingCount').textContent = 'Error';
-      document.getElementById('userLocation').textContent = 'Error';
-      document.getElementById('hireable').textContent = 'Error';
-      document.getElementById('userCompany').textContent = 'Error';
     }
-  }
-
-  // ============================================
-  // STATS - Like Button
-  // ============================================
-  const likeBtn = document.getElementById('likeBtn');
-  const likeDisplay = document.getElementById('likeCount');
-  
-  if (likeBtn && likeDisplay) {
-    let likeCount = parseInt(localStorage.getItem('portfolioLikes'));
-    
-    if (isNaN(likeCount) || likeCount === 0) {
-      likeCount = RIG.STARTING_LIKES;
-      localStorage.setItem('portfolioLikes', likeCount);
-    }
-    
-    let userLiked = localStorage.getItem('portfolioUserLiked') === 'true';
-    
-    function updateLikeDisplay() {
-      likeDisplay.textContent = likeCount;
-      if (userLiked) {
-        likeBtn.classList.add('liked');
-        likeBtn.querySelector('.like-icon').textContent = '❤';
-      } else {
-        likeBtn.classList.remove('liked');
-        likeBtn.querySelector('.like-icon').textContent = '♡';
-      }
-    }
-    
-    likeBtn.addEventListener('click', function() {
-      if (!userLiked) {
-        likeCount += 1;
-        userLiked = true;
-        localStorage.setItem('portfolioLikes', likeCount);
-        localStorage.setItem('portfolioUserLiked', 'true');
-        updateLikeDisplay();
-        
-        const icon = this.querySelector('.like-icon');
-        icon.style.transform = 'scale(1.5)';
-        setTimeout(() => {
-          icon.style.transform = 'scale(1)';
-        }, 300);
-      } else {
-        this.style.opacity = '0.6';
-        setTimeout(() => {
-          this.style.opacity = '1';
-        }, 500);
-      }
-    });
-    
-    updateLikeDisplay();
   }
 
   // ============================================
@@ -395,6 +383,7 @@ const CONFIG = {
   // ============================================
   setActive('home');
   updateViewCount();
+  loadLikes();
   fetchGitHubStats();
   
   console.log('🚀 Portfolio ready!');

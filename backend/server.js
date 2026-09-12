@@ -17,23 +17,16 @@ app.use(cors());
 app.use(express.json());
 
 // ============================================
-// SERVE STATIC FILES (with proper MIME types)
+// SERVE STATIC FILES
 // ============================================
 app.use(express.static(path.join(__dirname, '../frontend'), {
   setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.xml')) {
-      res.setHeader('Content-Type', 'application/xml');
-    }
-    if (filePath.endsWith('.txt')) {
-      res.setHeader('Content-Type', 'text/plain');
-    }
-    if (filePath.endsWith('.webmanifest')) {
-      res.setHeader('Content-Type', 'application/manifest+json');
-    }
+    if (filePath.endsWith('.xml')) res.setHeader('Content-Type', 'application/xml');
+    if (filePath.endsWith('.txt')) res.setHeader('Content-Type', 'text/plain');
+    if (filePath.endsWith('.webmanifest')) res.setHeader('Content-Type', 'application/manifest+json');
   }
 }));
 
-// Explicit routes for sitemap and robots
 app.get('/sitemap.xml', (req, res) => {
   res.type('application/xml');
   res.sendFile(path.join(__dirname, '../frontend/sitemap.xml'));
@@ -47,7 +40,6 @@ app.get('/robots.txt', (req, res) => {
 // ============================================
 // VIEWS COUNTER
 // ============================================
-
 const viewsFile = path.join(__dirname, 'views.json');
 
 if (!fs.existsSync(viewsFile)) {
@@ -75,9 +67,37 @@ app.post('/api/views/increment', (req, res) => {
 });
 
 // ============================================
+// LIKES COUNTER
+// ============================================
+const likesFile = path.join(__dirname, 'likes.json');
+
+if (!fs.existsSync(likesFile)) {
+  fs.writeFileSync(likesFile, JSON.stringify({ likes: 50 }));
+}
+
+app.get('/api/likes', (req, res) => {
+  try {
+    const data = JSON.parse(fs.readFileSync(likesFile, 'utf8'));
+    res.json({ likes: data.likes });
+  } catch (error) {
+    res.json({ likes: 50 });
+  }
+});
+
+app.post('/api/likes/increment', (req, res) => {
+  try {
+    const data = JSON.parse(fs.readFileSync(likesFile, 'utf8'));
+    data.likes += 1;
+    fs.writeFileSync(likesFile, JSON.stringify(data, null, 2));
+    res.json({ likes: data.likes });
+  } catch (error) {
+    res.json({ likes: 50 });
+  }
+});
+
+// ============================================
 // CONTACT FORM
 // ============================================
-
 const hasEmailConfig = process.env.EMAIL_USER && process.env.EMAIL_PASS;
 let transporter = null;
 
@@ -152,7 +172,6 @@ app.post('/api/contact', async (req, res) => {
 // ============================================
 // TERMINAL - WebSocket
 // ============================================
-
 const clients = new Set();
 
 const terminalResponses = {
@@ -173,9 +192,9 @@ const terminalResponses = {
          'Into tech, games, football, and figuring things out.',
 
   projects: 'My Projects:\n' +
-            '  📁 Portfolio v1    - Terminal-inspired portfolio\n' +
-            '  📁 Task Manager    - Task tracking with local storage\n' +
-            '  📁 API Explorer    - REST API exploration',
+            '  📁 StudyOS          - All-in-one study companion\n' +
+            '  📁 Finance Tracker  - Expense and budget tracker\n' +
+            '  📁 Minecraft Showcase - Fan-made Minecraft page',
 
   skills: 'Technical Skills:\n' +
           '  ✅ HTML, CSS, JavaScript, Python, Java\n' +
@@ -266,7 +285,6 @@ wss.on('connection', (ws) => {
 // ============================================
 // HEALTH CHECK
 // ============================================
-
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'ok', 
@@ -278,7 +296,6 @@ app.get('/api/health', (req, res) => {
 // ============================================
 // START SERVER
 // ============================================
-
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
